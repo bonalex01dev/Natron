@@ -24,6 +24,9 @@ platforms           darwin
 license             GPL-2+
 maintainers         nomaintainer
 
+# exclude pre-release versions
+github.livecheck.regex  {([0-9.]+)}
+
 description         H.265 encoder
 long_description    x265 is a free software library and application for \
                     encoding video streams into the H.265/MPEG-H HEVC \
@@ -81,14 +84,16 @@ if {${universal_possible} && [variant_isset universal]} {
     }
 }
 
+if {[variant_isset highdepth]} {
+    # we need to explore how to use the method below with the muniversal PG.
+    universal_variant no
+}
+
 variant highdepth conflicts universal description {Enable 10-bit and 12-bit encoding} {
 
     # this builds the recommended multi-library interface
     # https://x265.readthedocs.io/en/master/api.html#multi-library-interface
     # with the default ABI being the standard 8bit ABI as always
-
-    # we need to explore how to use the method below with the muniversal PG.
-    universal_variant no
 
     pre-configure {
         system "mkdir ${workpath}/10bit"
